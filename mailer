@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+
+
+
+class mailController extends Controller
+{
+public function index(){
+    return view('mail');
+}
+public function sendMail(Request $req) {
+            require base_path("vendor/autoload.php");
+            $mail = new PHPMailer();
+            try {
+            $mail->isSMTP(); 
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true; 
+            $mail->Username   = 'YOUR_MAIL'; // SMTP username
+            $mail->Password   = 'YOUR_PASSWORD'; // SMTP password
+            $mail->SMTPSecure = 'TLS'; 
+            
+            $mail->Port = 587;  
+            $mail->setFrom('xyz@gmail.com', 'Checking Example');
+            // $mail->setFrom('sender-from-email', 'sender-from-name');
+            $mail->addAddress($req->email);
+                // $mail->addCC("");
+                // $mail->addBCC("");
+    
+                $mail->addReplyTo('sender-reply-email', 'sender-reply-name');
+    
+                $mail->isHTML(true);  // Set email content format to HTML
+    
+                $mail->Subject = "Checking Example";
+                $html = "Hello Check Example here";
+                $mail->Body = $html;
+    
+                if( !$mail->send() ) {
+                    return "email not sent";
+                }            
+                else {
+                    return "successEmail has been sent.";
+                }
+    
+            } catch (Exception $e) {
+                 return "error,Message could not be sent.";
+            }
+    
+        }
+}
